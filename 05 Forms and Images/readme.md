@@ -69,7 +69,7 @@ Todo:
 1. sdk means software development kit and they are used to call your api instead of calling you  api manually like with the help of HTTP methods sdk gave you some of their own methods through which you call these api     
 2. every language will have their sdk to call their api 
 
-## Clouinary SaaS:
+## Cloudinary SaaS:
 You can upload images to the  cloudinary from the direct browser , server side  and from mobile application also you can upload files to the cloudinary with the help of cloudinary rest api or using one of the sdk of cloudinary which actually wraps this upload api ans makes the things simple for you 
 through cloudinary you can also do sign upload and un-sign upload also without authentication signature, generally we uses sdk to  for signed upload files  generally cloud_name, api_key and api_secret are generally configured globally but we can also specify with each upload call 
 cloudinary.v2.uploader.upload(file, options).then(callback);
