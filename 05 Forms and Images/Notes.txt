@@ -1,0 +1,110 @@
+Webpack (used by Create React App and others tools) works with ES modules like so:
+If the path has a file extension, then the file is bundled straightaway. Otherwise, the file extension is resolved using the resolve.extensions option, which tells the resolver which extensions are acceptable for resolution, e.g. .js, .jsx. More on the official doc.
+
+If you are using ES modules with Node.js or in the browser without any compilation step:
+A file extension must be provided when using the import keyword to resolve relative or absolute specifiers... This behavior matches how import behaves in browser environments... More on the official doc.
+
+If you are using CommonJS modules with Node.js:
+If the exact filename is not found, then Node.js will attempt to load the required filename with the added extensions: .js, .json, and finally .node. More on the official doc.
+ 
+
+
+ Parsing means analyzing and converting a program into an internal format that a runtime environment can actually run, for example the JavaScript engine inside browsers
+
+
+
+ so when you request from get form then server get that request in req.query always but if you try to so that same with the help of postman that is if you try to send a get request using form with a method of GET then you will see that postman will receive your data in req.body and not in request.query .
+ Generally when we uses react and all sort of frontend frame work then you will always get your data in req.body when you send  data from front end in forms using get method . This is a big gotcha !!!! 
+ post will work as it as it should work there will be no such case with post 
+
+
+
+ app.use(express.urlencoded({extended:false})) - when you send data with the help of get method than this line and app.use(express.json()) both are not of any use  , this is  what    i think but in case of ejs you can say that it is useless but in case of react this same data that earlier came into req.query can come in req.body then how will you populate that data lets check the formate of the data that came into the req.query 
+
+
+
+
+ express.json- where it is used and why we use it ?
+                 -parses incoming requests with JSON payloads -
+                    1. does front end form send you data in JSON format?
+                    2. what is body parser
+
+
+this is an built-in middleware function
+express.json() will return you a middleware and that middleware will only parse the body of that request whose content type header have the data type as JSON  
+
+What happen is that you get a request and then express.json() middleware see the content-type header and check that if content type is application/JSON then only i will parses the body of the request . Whatever Unicode  encoding you  have applied this will decode your data ,now a new body object is  created  with Object.create(null) and thus does not have a prototype and populated with the parsed data it may also return you an empty object if there was no data to parse  or the content type not matches or an error occurred
+You can also passes the option to  this middleware as parameter [see Here](https://expressjs.com/en/4x/api.html#express.json)
+
+when you send data from get method then at that time no content type header  is the in the user  this is the reason that you don't need to any parsing middleware for that 
+but when you send from the postman you specify the content type  header every time and that is the reason where postman can be deceiving for you and will always gave you data in req.body    
+ 
+your post form send the data in this formate username=robin&password=robin an to tpo parse this data  we will bw needing app.use(express.urlencoded({extended:false})) , 
+
+What happen is that you get a request and then app.use(express.urlencoded({extended:false})) middleware see the content-type header and check that if content type is application/x-www-form-urlencoded then only i will parses the body of the request .  only works for utf=8 encoding  this will decode your data ,now a new body object is created  with Object.create(null) and thus does not have a prototype. and populated with the parsed data it may also return you an empty object if there was no data to parse  or the content type not matches or an error occurred
+You can also passes the option to  this middleware as parameter [see Here](https://expressjs.com/en/4x/api.html#express.urlencoded)
+
+
+
+option object  keys :
+1. extended: this value will decide that using which library you want to parse request body if false you will go for query string  library and if true you will go for qs library by default its value is true but using the default has been deprecated.The “extended” syntax allows for rich objects and arrays to be encoded into the URL-encoded format, allowing for a JSON-like experience with URL-encoded.
+2. type: This is used to determine what media type the middleware will parse.
+3. parameterLimit:This option controls the maximum number of parameters that are allowed in the URL-encoded data. If a request contains more parameters than this value, an error will be raised.
+4. limit:Controls the maximum request body size
+5.inflate:Enables or disables handling deflated (compressed) bodies; when disabled, deflated bodies are rejected.
+6. verify : a function by default is  set to undefined
+
+
+
+when you try to upload the photo in post form with content-type header value as application/x-www-form-urlencoded  then   app.use(express.urlencoded({extended:false})) will parse the body and actually if you see in body you got this {"firstname":"robin","lastname":"khilery","samplefile":"7Th Janurary.png"} note photo is not uploaded but name of the photo is uploaded, 
+actually what happening is that i am not sending the file from the  frontend because the enctype is application/x-www-form-urlencoded  you have to do it   enctype="multipart/form-data"
+
+now you send this file to the server but on server there is no-one to parse this file
+
+so lets find a multipart payload parser dor express 
+    1. express-fileupload
+    2. multer
+    3. formidable 
+
+    as of now i will use  express file upload 
+    is more good  although formidable it have 4 dependencies compare to express file upload have 1 dependency    but its weekly downloads are more  , and its size to small when you  compare with express file upload and it also have 5 maintainer while express file upload have 3 
+
+- learn formidable  https://www.section.io/engineering-education/uploading-files-using-formidable-nodejs/
+- learn multer  - https://www.section.io/engineering-education/uploading-files-using-multer-nodejs/
+
+
+
+file upload not only parses you files but it also parses other  data but it only do that when content type is multipart 
+
+express-file Upload by default it uploads your file to  RAM , using useTempFiles option set to true you can actually  use temporary files - temporary files are rhos files which are created in the hard disk instead of RAM at the time of your softwares runs at RAM  in order too efficiently use Am and to avoid memory leakage 
+problems 
+if you will not provide temporary  files directory path then you your temp files will be stored at your cwd in folder tmp 
+
+
+Q. why to upload file to services like cloudinary and not to database directly ? 
+
+
+
+okay till now I have send this image from the frontend to the backend and i have also parsed thi image ans i have also saved it as temp file the only thing noe remain is to save this file to database or some cloud storage and then referring to it through a public link  or something like that .
+
+
+cloudinary:
+1. what is SDK 
+        - sdk vs api - 
+                    what are api - 1. api are all about communication , commination between two services ,between two apps etc.
+                                    2. api mean abstraction , you need noe to worry about ho you are receiving the response all you need to know is that how you make the request to that api 
+                                    3. api are standardized - like in case of rest api there to request it you will use a HTTp method , and you will pass some parameters to it and an endpoint will also be needed that will be the url for that api 
+                                    4. response that you will get will be in a json format
+                    what is sdk-    1. sdk means software development kit and they are used to call your api instead of calling you  api manually like with the help of HTTP methods sdk gave you some of their own methods through which you call these api        2. every language will have their sdk to call their api  
+
+2. when you can upload the image from the cloudinary in front end also then why don't we do this that you not only send images to the backend and only send url of that to the backend ? 
+ 
+
+
+
+you can upload images to the  cloudniary from the direct browser , server side  and from mobile application also you can uploade files tomthe clouinary with the help of clocunoary rest api or using one of the sdk of cloudinary which actually wraps this uploade api ans makes the things simple for you 
+through cloudniary you can also do sign uploade and unsign upload also without authentication signature, generally we uses sdk to  for signed upload files  generally cloud_name, api_key and api_secret are generally configured globally but we can aslo specify with each upload call 
+cloudinary.v2.uploader.upload(file, options).then(callback);
+
+
+backend sdk applies a wrapper to uploade api to use any kind of language you wnat to usse 
