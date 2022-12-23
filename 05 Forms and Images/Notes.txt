@@ -8,20 +8,23 @@ If you are using CommonJS modules with Node.js:
 If the exact filename is not found, then Node.js will attempt to load the required filename with the added extensions: .js, .json, and finally .node. More on the official doc.
  
 
+************************************************************************************************************************************************************************************
+
 
  Parsing means analyzing and converting a program into an internal format that a runtime environment can actually run, for example the JavaScript engine inside browsers
 
+************************************************************************************************************************************************************************************
 
-
+ 
  so when you request from get form then server get that request in req.query always but if you try to so that same with the help of postman that is if you try to send a get request using form with a method of GET then you will see that postman will receive your data in req.body and not in request.query .
+ when you send data from get method then at that time no content type header  is send to the server   this is the reason that you don't need to any parsing middleware for that because parsing middleware looks for content type header 
+but when you send from the postman you specify the content type  header every time and that is the reason where postman can be deceiving for you and will always gave you data in req.body   
+
  Generally when we uses react and all sort of frontend frame work then you will always get your data in req.body when you send  data from front end in forms using get method . This is a big gotcha !!!! 
  post will work as it as it should work there will be no such case with post 
+ 
 
-
-
- app.use(express.urlencoded({extended:false})) - when you send data with the help of get method than this line and app.use(express.json()) both are not of any use  , this is  what    i think but in case of ejs you can say that it is useless but in case of react this same data that earlier came into req.query can come in req.body then how will you populate that data lets check the formate of the data that came into the req.query 
-
-
+ 
 
 
  express.json- where it is used and why we use it ?
@@ -36,8 +39,7 @@ express.json() will return you a middleware and that middleware will only parse 
 What happen is that you get a request and then express.json() middleware see the content-type header and check that if content type is application/JSON then only i will parses the body of the request . Whatever Unicode  encoding you  have applied this will decode your data ,now a new body object is  created  with Object.create(null) and thus does not have a prototype and populated with the parsed data it may also return you an empty object if there was no data to parse  or the content type not matches or an error occurred
 You can also passes the option to  this middleware as parameter [see Here](https://expressjs.com/en/4x/api.html#express.json)
 
-when you send data from get method then at that time no content type header  is the in the user  this is the reason that you don't need to any parsing middleware for that 
-but when you send from the postman you specify the content type  header every time and that is the reason where postman can be deceiving for you and will always gave you data in req.body    
+ 
  
 your post form send the data in this formate username=robin&password=robin an to tpo parse this data  we will bw needing app.use(express.urlencoded({extended:false})) , 
 
@@ -102,9 +104,16 @@ cloudinary:
 
 
 
-you can upload images to the  cloudniary from the direct browser , server side  and from mobile application also you can uploade files tomthe clouinary with the help of clocunoary rest api or using one of the sdk of cloudinary which actually wraps this uploade api ans makes the things simple for you 
-through cloudniary you can also do sign uploade and unsign upload also without authentication signature, generally we uses sdk to  for signed upload files  generally cloud_name, api_key and api_secret are generally configured globally but we can aslo specify with each upload call 
+you can upload images to the  cloudinary from the direct browser , server side  and from mobile application also you can upload files to the cloudinary with the help of cloudinary rest api or using one of the sdk of cloudinary which actually wraps this upload api ans makes the things simple for you 
+through cloudinary you can also do sign upload and un-sign upload also without authentication signature, generally we uses sdk to  for signed upload files  generally cloud_name, api_key and api_secret are generally configured globally but we can also specify with each upload call 
 cloudinary.v2.uploader.upload(file, options).then(callback);
 
 
-backend sdk applies a wrapper to uploade api to use any kind of language you wnat to usse 
+backend sdk applies a wrapper to upload api to use any kind of language you want to use 
+
+
+
+so finally i was able to upload single files in cloudinary but when i upload the same file again i am able to upload them that i don't want fot that you can set your own public id like name  of the file and and then you have to also change the value of a prop called unique_filename to false so that it do not add anything random to your file name to make it unique 
+
+// Now lets see how to upload multiple files to cloudinary :- you have to do this 1 operation that you have done for single upload multiple time so you can use array 
+

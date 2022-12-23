@@ -1,6 +1,6 @@
 <%-include("partials/Header",{title:"postform"})%>
 <%-include("partials/Navigation" )%>
-<form method="POST" action="/mypost" class="container mx-auto col-4" enctype="multipart/form-data"> 
+<form method="POST" action="/mypost" class="container mx-auto col-4" enctype="multipart/form-data" > 
   
   <h1>This is a post form </h1>
   <div class="mb-3">
@@ -13,7 +13,7 @@
   </div> 
   <div class="mb-3">
     <label for="samplefile" class="form-label">samplefile</label>
-    <input type="file" class="form-control" name="samplefile" id="lastname">
+    <input type="file" class="form-control" name="samplefile" id="lastname" multiple>
   </div> 
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
